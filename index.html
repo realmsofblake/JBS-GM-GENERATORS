@@ -4,56 +4,113 @@
   <meta charset="UTF-8">
   <title>GM Toolkit</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f2f2f2; }
-    .generator { margin-bottom: 30px; background: #fff; padding: 15px; border-radius: 10px; }
-    button { margin-top: 10px; padding: 8px 16px; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .generator {
+      background: white;
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .generator h2 {
+      margin-top: 0;
+    }
+    button {
+      margin-top: 10px;
+      padding: 6px 12px;
+      font-size: 1em;
+    }
   </style>
 </head>
 <body>
 
-  <h1>🎲 Game Master Toolkit</h1>
+  <h1>🎲 GM Toolkit</h1>
 
-  <!-- Name Generator -->
-  <div class="generator">
-    <h2>👨 Male Name Generator</h2>
-    <p id="maleNameResult">Click to generate a name</p>
-    <button onclick="generateMaleName()">Generate</button>
-  </div>
-
-  <!-- Motivation Generator -->
-  <div class="generator">
-    <h2>🎯 NPC Motivation</h2>
-    <p id="motivationResult">Click to generate a motivation</p>
-    <button onclick="generateMotivation()">Generate</button>
-  </div>
-
-  <!-- Weather Generator -->
-  <div class="generator">
-    <h2>⛅ Weather</h2>
-    <p id="weatherResult">Click to generate weather</p>
-    <button onclick="generateWeather()">Generate</button>
-  </div>
+  <div id="generators"></div>
 
   <script>
-    const maleNames = ["Tharn", "Ulric", "Borin", "Kael", "Draven"];
-    const motivations = ["Revenge against a past enemy", "Desire for immortality", "To protect a sacred place", "Seeking lost family", "Fulfilling a prophecy"];
-    const weatherOptions = ["Clear skies", "Thunderstorm", "Foggy morning", "Blistering heat", "Heavy snowfall"];
+    const generators = {
+      "Male Name": ["Tharn", "Ulric", "Borin", "Kael", "Draven", "Eldric", "Fendrel", "Gorik", "Leoric", "Malric"],
+      "Female Name": ["Seris", "Ysolde", "Thalia", "Kaera", "Velra", "Elira", "Mira", "Sylwen", "Nerys", "Isolde"],
+      "Minor Loot": ["A handful of silver coins", "A rusty dagger", "A healing herb", "A common scroll", "A torch"],
+      "Average Loot": ["A pouch of gold", "A short sword +1", "A potion of healing", "A map fragment", "A set of thieves' tools"],
+      "Major Loot": ["Legendary sword", "Bag of Holding", "Ring of Invisibility", "Ancient spellbook", "Dragon egg"],
+      "NPC Disposition": ["Friendly", "Hostile", "Suspicious", "Desperate", "Deceitful", "Indifferent", "Curious", "Arrogant"],
+      "Weather": ["Clear skies", "Heavy rain", "Thunderstorm", "Snowstorm", "Dense fog", "Blistering heat", "Bitter cold"],
+      "Wilderness Encounter (Forest)": ["Bandits ambush", "Lost merchant", "Wolf pack", "Ancient tree spirit", "Elven scouts"],
+      "Wilderness Encounter (Mountain)": ["Rockslide", "Mountain goat herd", "Griffon attack", "Hermit's cave", "Dwarven outpost"],
+      "Wilderness Encounter (Plains)": ["Horse stampede", "Traveling circus", "Nomadic tribe", "Dust storm", "Goblin raiders"],
+      "Wilderness Encounter (Jungle)": ["Giant snake", "Poisonous plants", "Lost temple", "Tribal hunters", "Swarm of insects"],
+      "Wilderness Encounter (Swamp)": ["Will-o'-the-wisps", "Swamp hag", "Sinking ground", "Crocodile attack", "Haunted ruins"],
+      "Road Encounter": ["Traveling bard", "Broken-down cart", "Noble in disguise", "Merchant caravan", "Highway robbery"],
+      "NPC Motivation": ["Revenge", "Justice", "Wealth", "Love", "Escape", "Fame", "Knowledge", "Power", "Redemption"],
+      "NPC Physical Description": [
+        "Male, black hair, scar across the face",
+        "Female, red braided hair, mechanical arm",
+        "Nonbinary, white-blond hair, glowing eyes",
+        "Male, bald, missing teeth",
+        "Female, curly brown hair, tattooed arms",
+        "Male, long gray beard, jeweled eyepatch",
+        "Female, silver hair, speaks with birds"
+      ],
+      "D100 Roll": () => Math.floor(Math.random() * 100) + 1,
+      "D20 Roll": () => Math.floor(Math.random() * 20) + 1,
+      "Encounter Difficulty": ["Trivial", "Easy", "Moderate", "Hard", "Deadly", "Mythic"],
+      "Wound": ["Cut across the arm", "Bruised ribs", "Sprained ankle", "Bloody nose", "Minor burn"],
+      "Major Wound": ["Broken leg", "Punctured lung", "Blinded in one eye", "Severed hand", "Skull fracture"],
+      "Medieval Insult": ["Thou art as useless as a screen door on a castle wall!", "Thy brain is as dry as last year's biscuit.", "Thou lumpish hedge-born scullion!", "Thou reeky flap-mouthed knave!", "Thou art as crooked as a dog's hind leg!"],
+      "Medieval Greeting": ["Good morrow, traveler!", "Hail and well met!", "May thy path be free of shadows.", "Peace upon thy hearth.", "Fortune favor thee."]
+    };
 
-    function generateMaleName() {
-      const name = maleNames[Math.floor(Math.random() * maleNames.length)];
-      document.getElementById("maleNameResult").textContent = name;
+    const outputDiv = document.getElementById("generators");
+
+    // Helper to create a generator box
+    function createGeneratorBox(title, content) {
+      const container = document.createElement("div");
+      container.className = "generator";
+
+      const heading = document.createElement("h2");
+      heading.textContent = title;
+
+      const result = document.createElement("p");
+      result.id = title.replace(/\s+/g, '-') + "-result";
+
+      const button = document.createElement("button");
+      button.textContent = "Generate";
+      button.onclick = () => {
+        result.textContent = generateContent(title);
+      };
+
+      container.appendChild(heading);
+      container.appendChild(result);
+      container.appendChild(button);
+      outputDiv.appendChild(container);
     }
 
-    function generateMotivation() {
-      const motivation = motivations[Math.floor(Math.random() * motivations.length)];
-      document.getElementById("motivationResult").textContent = motivation;
+    // Generate result
+    function generateContent(category) {
+      const options = generators[category];
+      if (typeof options === "function") {
+        return options();
+      } else {
+        return options[Math.floor(Math.random() * options.length)];
+      }
     }
 
-    function generateWeather() {
-      const weather = weatherOptions[Math.floor(Math.random() * weatherOptions.length)];
-      document.getElementById("weatherResult").textContent = weather;
-    }
+    // Initialize all generators
+    window.onload = function() {
+      for (let title in generators) {
+        createGeneratorBox(title, generateContent(title));
+        const resultId = title.replace(/\s+/g, '-') + "-result";
+        document.getElementById(resultId).textContent = generateContent(title);
+      }
+    };
   </script>
 
 </body>
-</html>
+</html>p
