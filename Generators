@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GM Toolkit</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f2f2f2; }
+    .generator { margin-bottom: 30px; background: #fff; padding: 15px; border-radius: 10px; }
+    button { margin-top: 10px; padding: 8px 16px; }
+  </style>
+</head>
+<body>
+
+  <h1>🎲 Game Master Toolkit</h1>
+
+  <!-- Name Generator -->
+  <div class="generator">
+    <h2>👨 Male Name Generator</h2>
+    <p id="maleNameResult">Click to generate a name</p>
+    <button onclick="generateMaleName()">Generate</button>
+  </div>
+
+  <!-- Motivation Generator -->
+  <div class="generator">
+    <h2>🎯 NPC Motivation</h2>
+    <p id="motivationResult">Click to generate a motivation</p>
+    <button onclick="generateMotivation()">Generate</button>
+  </div>
+
+  <!-- Weather Generator -->
+  <div class="generator">
+    <h2>⛅ Weather</h2>
+    <p id="weatherResult">Click to generate weather</p>
+    <button onclick="generateWeather()">Generate</button>
+  </div>
+
+  <script>
+    const maleNames = ["Tharn", "Ulric", "Borin", "Kael", "Draven"];
+    const motivations = ["Revenge against a past enemy", "Desire for immortality", "To protect a sacred place", "Seeking lost family", "Fulfilling a prophecy"];
+    const weatherOptions = ["Clear skies", "Thunderstorm", "Foggy morning", "Blistering heat", "Heavy snowfall"];
+
+    function generateMaleName() {
+      const name = maleNames[Math.floor(Math.random() * maleNames.length)];
+      document.getElementById("maleNameResult").textContent = name;
+    }
+
+    function generateMotivation() {
+      const motivation = motivations[Math.floor(Math.random() * motivations.length)];
+      document.getElementById("motivationResult").textContent = motivation;
+    }
+
+    function generateWeather() {
+      const weather = weatherOptions[Math.floor(Math.random() * weatherOptions.length)];
+      document.getElementById("weatherResult").textContent = weather;
+    }
+  </script>
+
+</body>
+</html>
