@@ -1,37 +1,26 @@
-<!DOCTYPE html>
+""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GM Generators</title>
   <style>
-   body {
-  /* keep existing styles */
-  font-family: 'Georgia', serif;
-  background-color: #f4f1e8;
-  color: #333;
-  padding: 20px;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #f4f1e8;
+      color: #333;
+      padding: 20px;
+    }
     h1 {
       text-align: center;
     }
-#generators {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  width: 100%;
-  max-width: 1200px;
-}
- .generator {
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
+    .generator {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
     .button {
       margin-top: 10px;
       padding: 10px 15px;
@@ -71,7 +60,8 @@
       ], weighted: true },
 
       { id: 'weather', label: 'Weather', options: [
-        ["Clear skies", 50], ["Average Weather", 50], ["Bad Weather", 25], ["Very Bad Weather", 15], ["Favorable Weather Conditions", 10], weighted: true },
+        ["Clear skies", 50], ["Light rain", 20], ["Thunderstorm", 10], ["Foggy", 10], ["Blizzard", 5], ["Heatwave", 5]
+      ], weighted: true },
 
       { id: 'forestEncounter', label: 'Forest Encounter', options: [
         ["Bandit ambush", 20], ["Wandering druid", 15], ["Pack of wolves", 25], ["Mysterious lights", 10], ["Fey trickster", 10], ["Abandoned camp", 20]
