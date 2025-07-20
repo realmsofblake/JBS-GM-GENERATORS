@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -6,116 +6,152 @@
   <title>GM Generators</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #1e1e1e;
-      color: #f0f0f0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
+      font-family: 'Georgia', serif;
+      background-color: #f4f1e8;
+      color: #333;
       padding: 20px;
     }
-    .generator {
-      background: #2c2c2c;
-      border-radius: 10px;
-      padding: 15px;
-      width: 300px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    h1 {
+      text-align: center;
     }
-    button {
-      background: #4caf50;
+    .generator {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .button {
+      margin-top: 10px;
+      padding: 10px 15px;
+      font-size: 1em;
+      background-color: #4caf50;
       color: white;
       border: none;
-      padding: 10px;
       border-radius: 5px;
       cursor: pointer;
     }
-    button:hover {
-      background: #45a049;
-    }
-    p {
+    .output {
       margin-top: 10px;
       font-weight: bold;
     }
   </style>
 </head>
 <body>
-
-  <!-- Example Generator -->
-  <div class="generator">
-    <h2>Male Human Name</h2>
-    <button onclick="generate('maleHuman')">Generate</button>
-    <p id="maleHuman-result"></p>
-  </div>
-
-  <div class="generator">
-    <h2>Male Elf Name</h2>
-    <button onclick="generate('maleElf')">Generate</button>
-    <p id="maleElf-result"></p>
-  </div>
-
-  <div class="generator">
-    <h2>Male Dwarf Name</h2>
-    <button onclick="generate('maleDwarf')">Generate</button>
-    <p id="maleDwarf-result"></p>
-  </div>
-
-  <div class="generator">
-    <h2>Female Human Name</h2>
-    <button onclick="generate('femaleHuman')">Generate</button>
-    <p id="femaleHuman-result"></p>
-  </div>
-
-  <div class="generator">
-    <h2>Female Elf Name</h2>
-    <button onclick="generate('femaleElf')">Generate</button>
-    <p id="femaleElf-result"></p>
-  </div>
-
-  <div class="generator">
-    <h2>Female Dwarf Name</h2>
-    <button onclick="generate('femaleDwarf')">Generate</button>
-    <p id="femaleDwarf-result"></p>
-  </div>
-
-  <!-- More generators below (abbreviated for clarity) -->
+  <h1>GM Generators</h1>
+  <div id="generators"></div>
 
   <script>
-    function weightedChoice(options) {
+    const generators = [
+      { id: 'maleHuman', label: 'Male Human Name', options: ["Thomas", "Henry", "Alaric", "Baldwin", "Cedric"] },
+      { id: 'maleDwarf', label: 'Male Dwarf Name', options: ["Thorin", "Dain", "Borin", "Grimbold", "Durin"] },
+      { id: 'maleElf', label: 'Male Elf Name', options: ["Legolas", "Thalion", "Aerendil", "Finarfin", "Celeborn"] },
+
+      { id: 'femaleHuman', label: 'Female Human Name', options: ["Isabella", "Matilda", "Eleanor", "Beatrice", "Joan"] },
+      { id: 'femaleDwarf', label: 'Female Dwarf Name', options: ["Hilda", "Bruni", "Dagna", "Frida", "Helga"] },
+      { id: 'femaleElf', label: 'Female Elf Name', options: ["Arwen", "Luthien", "Galadriel", "Elenwe", "Nimrodel"] },
+
+      { id: 'minorLoot', label: 'Minor Loot', options: ["A pouch of silver coins", "A rusty dagger", "A faded map", "A healing herb", "A ring of unknown origin"] },
+      { id: 'averageLoot', label: 'Average Loot', options: ["A +1 sword", "Bag of holding", "Scroll of fireball", "Amulet of protection", "50 gold pieces"] },
+      { id: 'majorLoot', label: 'Major Loot', options: ["Holy Avenger", "Ring of Three Wishes", "Staff of Power", "Deck of Many Things", "Tome of Clear Thought"] },
+
+      { id: 'npcDisposition', label: 'NPC Disposition', options: [
+        ["Friendly", 30], ["Neutral", 40], ["Suspicious", 15], ["Hostile", 10], ["Helpful", 5]
+      ], weighted: true },
+
+      { id: 'weather', label: 'Weather', options: [
+        ["Clear skies", 50], ["Light rain", 20], ["Thunderstorm", 10], ["Foggy", 10], ["Blizzard", 5], ["Heatwave", 5]
+      ], weighted: true },
+
+      { id: 'forestEncounter', label: 'Forest Encounter', options: [
+        ["Bandit ambush", 20], ["Wandering druid", 15], ["Pack of wolves", 25], ["Mysterious lights", 10], ["Fey trickster", 10], ["Abandoned camp", 20]
+      ], weighted: true },
+
+      { id: 'mountainEncounter', label: 'Mountain Encounter', options: [
+        ["Rockslide", 20], ["Mountain lion", 25], ["Hermit", 10], ["Giant eagle", 15], ["Cave troll", 10], ["Miner's ghost", 20]
+      ], weighted: true },
+
+      { id: 'plainsEncounter', label: 'Plains Encounter', options: [
+        ["Grazing herd", 30], ["Nomadic tribe", 20], ["Dust storm", 10], ["Gnoll raiders", 15], ["Traveling merchant", 15], ["Ancient ruin", 10]
+      ], weighted: true },
+
+      { id: 'jungleEncounter', label: 'Jungle Encounter', options: [
+        ["Giant snake", 25], ["Quicksand", 20], ["Tribal scouts", 15], ["Lost temple", 10], ["Swarm of insects", 20], ["Jungle spirit", 10]
+      ], weighted: true },
+
+      { id: 'swampEncounter', label: 'Swamp Encounter', options: [
+        ["Will-o'-wisp", 15], ["Bog hag", 10], ["Alligator", 25], ["Sinking ground", 20], ["Lost traveler", 20], ["Rotting corpse", 10]
+      ], weighted: true },
+
+      { id: 'roadEncounter', label: 'Road Encounter', options: [
+        ["Wagon with broken wheel", 25], ["Merchant caravan", 20], ["Traveling bard", 15], ["Toll collectors", 15], ["Ambush", 15], ["Refugees", 10]
+      ], weighted: true },
+
+      { id: 'urbanEncounter', label: 'Urban Encounter', options: [
+        ["Pickpocket", 20], ["Street performance", 20], ["Drunken brawl", 15], ["Lost child", 10], ["Guard patrol", 15], ["Secret meeting", 20]
+      ], weighted: true },
+
+      { id: 'npcMotivation', label: 'NPC Motivation', options: ["Revenge", "Greed", "Justice", "Love", "Power", "Survival", "Curiosity", "Redemption"] },
+
+      { id: 'npcDescription', label: 'NPC Description', options: [
+        "Male, black hair, scarred face", "Female, red hair, silver eyes", "Nonbinary, blond hair, missing arm", "Male, bald, elaborate tattoo", "Female, gray hair, glowing eyes"
+      ] },
+
+      { id: 'd100', label: 'D100 Roll', options: Array.from({ length: 100 }, (_, i) => i + 1) },
+      { id: 'd20', label: 'D20 Roll', options: Array.from({ length: 20 }, (_, i) => i + 1) },
+
+      { id: 'difficulty', label: 'Encounter Difficulty', options: ["Trivial", "Easy", "Moderate", "Hard", "Deadly"] },
+      { id: 'wound', label: 'Wound', options: ["Bruised arm", "Twisted ankle", "Black eye", "Bloody nose", "Dislocated shoulder"] },
+      { id: 'majorWound', label: 'Major Wound', options: ["Broken leg", "Internal bleeding", "Blinded eye", "Cracked ribs", "Severed finger"] },
+
+      { id: 'medievalInsult', label: 'Medieval Insult', options: ["Thou art a boil-brained knave!", "Thy wit's as thick as a castle wall.", "You cur-dog of a hedge-born clotpole!", "Thou reeky, sheep-biting scullion!", "Away, you saucy, common-kissing knave!"] },
+
+      { id: 'medievalGreeting', label: 'Medieval Greeting', options: ["Well met, good traveler!", "Hail and well met!", "Good morrow to thee.", "Blessings upon your path.", "May your sword stay sharp."] }
+    ];
+
+    function weightedRandom(options) {
       const totalWeight = options.reduce((sum, [_, weight]) => sum + weight, 0);
-      let random = Math.random() * totalWeight;
-      for (const [item, weight] of options) {
-        if (random < weight) return item;
-        random -= weight;
+      let r = Math.random() * totalWeight;
+      for (const [value, weight] of options) {
+        if ((r -= weight) < 0) return value;
       }
     }
 
-    const data = {
-      maleHuman: ["John", "Richard", "Eli", "Thomas", "Baldric"],
-      maleElf: ["Faelar", "Thamior", "Erevan", "Aelar", "Soveliss"],
-      maleDwarf: ["Thrain", "Dain", "Durin", "Borin", "Kili"],
-      femaleHuman: ["Anna", "Lena", "Catherine", "Isolde", "Beatrice"],
-      femaleElf: ["Lyari", "Aerendyl", "Mireleth", "Thalira", "Sylvara"],
-      femaleDwarf: ["Dis", "Helja", "Vistra", "Sannl", "Runa"],
-      // Add the rest of the categories below
-    };
-
-    function generate(category) {
-      const resultElement = document.getElementById(`${category}-result`);
-      let result;
-      if (Array.isArray(data[category])) {
-        result = data[category][Math.floor(Math.random() * data[category].length)];
-      } else if (Array.isArray(data[category].weighted)) {
-        result = weightedChoice(data[category].weighted);
-      } else {
-        result = "[No Data]";
-      }
-      resultElement.textContent = result;
+    function generateAll() {
+      generators.forEach(gen => {
+        const outputEl = document.getElementById(`output-${gen.id}`);
+        const result = gen.weighted ? weightedRandom(gen.options) : gen.options[Math.floor(Math.random() * gen.options.length)];
+        outputEl.textContent = result;
+      });
     }
 
-    window.onload = () => {
-      Object.keys(data).forEach(generate);
-    };
+    function createGenerators() {
+      const container = document.getElementById('generators');
+      generators.forEach(gen => {
+        const div = document.createElement('div');
+        div.className = 'generator';
+
+        const button = document.createElement('button');
+        button.className = 'button';
+        button.textContent = gen.label;
+        button.onclick = () => {
+          const outputEl = document.getElementById(`output-${gen.id}`);
+          const result = gen.weighted ? weightedRandom(gen.options) : gen.options[Math.floor(Math.random() * gen.options.length)];
+          outputEl.textContent = result;
+        };
+
+        const output = document.createElement('div');
+        output.className = 'output';
+        output.id = `output-${gen.id}`;
+
+        div.appendChild(button);
+        div.appendChild(output);
+        container.appendChild(div);
+      });
+    }
+
+    createGenerators();
+    generateAll();
   </script>
 </body>
 </html>
