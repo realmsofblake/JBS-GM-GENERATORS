@@ -1,204 +1,96 @@
-""<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GM Generators</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GM Generator</title>
   <style>
     body {
       font-family: Georgia, serif;
-      background-color: #f4f4f4;
-      margin: 0;
+      background-color: #f4f4f9;
       padding: 20px;
     }
     h1 {
       text-align: center;
-      margin-bottom: 40px;
     }
-    .category {
-      background: #fff;
+    .generator {
+      background-color: #fff;
+      padding: 15px;
+      margin: 15px auto;
       border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+    }
+    .generator h2 {
+      margin-top: 0;
+    }
+    .result {
+      font-weight: bold;
+      margin-top: 10px;
     }
     button {
-      padding: 6px 12px;
-      margin: 5px;
+      margin: 5px 5px 0 0;
+      padding: 8px 12px;
+      font-size: 1em;
       border-radius: 5px;
       border: none;
-      background-color: #444;
+      background-color: #333;
       color: white;
       cursor: pointer;
-    }
-    button:hover {
-      background-color: #666;
-    }
-    .output {
-      margin-top: 10px;
-      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <h1>GM Generators</h1>
 
-  <div class="category">
-    <h2>Names</h2>
-    <p><strong>Male Names:</strong></p>
-    <button onclick="generate('humanMaleNames')">Human</button>
-    <button onclick="generate('dwarfMaleNames')">Dwarf</button>
-    <button onclick="generate('elfMaleNames')">Elf</button>
-    <div class="output" id="maleNameOutput"></div>
-
-    <p><strong>Female Names:</strong></p>
-    <button onclick="generate('humanFemaleNames')">Human</button>
-    <button onclick="generate('dwarfFemaleNames')">Dwarf</button>
-    <button onclick="generate('elfFemaleNames')">Elf</button>
-    <div class="output" id="femaleNameOutput"></div>
+  <div class="generator" id="maleNames">
+    <h2>Male Names</h2>
+    <button onclick="generate('maleHuman')">Human</button>
+    <button onclick="generate('maleDwarf')">Dwarf</button>
+    <button onclick="generate('maleElf')">Elf</button>
+    <div class="result" id="maleHuman"></div>
+    <div class="result" id="maleDwarf"></div>
+    <div class="result" id="maleElf"></div>
   </div>
 
-  <div class="category">
-    <h2>Loot</h2>
-    <button onclick="generate('minorLoot')">Minor Loot</button>
-    <button onclick="generate('averageLoot')">Average Loot</button>
-    <button onclick="generate('majorLoot')">Major Loot</button>
-    <div class="output" id="lootOutput"></div>
+  <div class="generator" id="femaleNames">
+    <h2>Female Names</h2>
+    <button onclick="generate('femaleHuman')">Human</button>
+    <button onclick="generate('femaleDwarf')">Dwarf</button>
+    <button onclick="generate('femaleElf')">Elf</button>
+    <div class="result" id="femaleHuman"></div>
+    <div class="result" id="femaleDwarf"></div>
+    <div class="result" id="femaleElf"></div>
   </div>
 
-  <div class="category">
-    <h2>Encounters</h2>
-    <button onclick="generateWeighted('forestEncounters', 'forestOutput')">Forest</button>
-    <button onclick="generateWeighted('mountainEncounters', 'mountainOutput')">Mountain</button>
-    <button onclick="generateWeighted('plainsEncounters', 'plainsOutput')">Plains</button>
-    <button onclick="generateWeighted('jungleEncounters', 'jungleOutput')">Jungle</button>
-    <button onclick="generateWeighted('swampEncounters', 'swampOutput')">Swamp</button>
-    <button onclick="generateWeighted('roadEncounters', 'roadOutput')">Road</button>
-    <button onclick="generateWeighted('urbanEncounters', 'urbanOutput')">Urban</button>
-    <div class="output" id="forestOutput"></div>
-    <div class="output" id="mountainOutput"></div>
-    <div class="output" id="plainsOutput"></div>
-    <div class="output" id="jungleOutput"></div>
-    <div class="output" id="swampOutput"></div>
-    <div class="output" id="roadOutput"></div>
-    <div class="output" id="urbanOutput"></div>
-  </div>
-
-  <div class="category">
-    <h2>NPCs</h2>
-    <button onclick="generateWeighted('npcDispositions', 'npcDispositionOutput')">NPC Disposition</button>
-    <button onclick="generate('npcMotivations')">NPC Motivation</button>
-    <button onclick="generate('npcDescriptions')">NPC Description</button>
-    <div class="output" id="npcDispositionOutput"></div>
-    <div class="output" id="npcMotivationOutput"></div>
-    <div class="output" id="npcDescriptionOutput"></div>
-  </div>
-
-  <div class="category">
-    <h2>Dice Rolls</h2>
-    <button onclick="rollDie(100, 'd100Output')">Roll D100</button>
-    <button onclick="rollDie(20, 'd20Output')">Roll D20</button>
-    <div class="output" id="d100Output"></div>
-    <div class="output" id="d20Output"></div>
-  </div>
-
-  <div class="category">
-    <h2>Other</h2>
-    <button onclick="generate('encounterDifficulties')">Encounter Difficulty</button>
-    <button onclick="generate('wounds')">Wound</button>
-    <button onclick="generate('majorWounds')">Major Wound</button>
-    <button onclick="generate('medievalInsults')">Medieval Insult</button>
-    <button onclick="generate('medievalGreetings')">Medieval Greeting</button>
-    <div class="output" id="otherOutput"></div>
+  <div class="generator" id="loot">
+    <h2>Minor Loot</h2>
+    <button onclick="generate('minorLoot')">Generate Loot</button>
+    <div class="result" id="minorLoot"></div>
   </div>
 
   <script>
-    function generate(listName) {
-      const item = lists[listName][Math.floor(Math.random() * lists[listName].length)];
-      const outputId = listName.includes("Male") ? "maleNameOutput" :
-                       listName.includes("Female") ? "femaleNameOutput" :
-                       listName.includes("Loot") ? "lootOutput" :
-                       listName.includes("npcMotivations") ? "npcMotivationOutput" :
-                       listName.includes("npcDescriptions") ? "npcDescriptionOutput" :
-                       listName.includes("encounterDifficulties") || listName.includes("wounds") || listName.includes("Insult") || listName.includes("Greeting") ? "otherOutput" : "output";
-      document.getElementById(outputId).textContent = item;
+    const data = {
+      maleHuman: ["Arthur", "Baldric", "Cedric", "Duncan", "Edric"],
+      maleDwarf: ["Thrain", "Gimli", "Durin", "Borin", "Fundin"],
+      maleElf: ["Legolas", "Eldrin", "Faelar", "Thalion", "Aerendyl"],
+      femaleHuman: ["Elena", "Brienne", "Rowena", "Kara", "Lyra"],
+      femaleDwarf: ["Dis", "Gurna", "Bera", "Thora", "Helja"],
+      femaleElf: ["Arwen", "Luthien", "Naivara", "Shayana", "Zinnia"],
+      minorLoot: ["5 copper coins", "Old dagger", "Healing herb", "Torn map fragment", "Rusty key"]
+    };
+
+    function getRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    function generateWeighted(listName, outputId) {
-      const pool = lists[listName].flatMap(item => Array(item.weight).fill(item.value));
-      const result = pool[Math.floor(Math.random() * pool.length)];
-      document.getElementById(outputId).textContent = result;
+    function generate(type) {
+      document.getElementById(type).innerText = getRandom(data[type]);
     }
 
-    function rollDie(sides, outputId) {
-      const roll = Math.ceil(Math.random() * sides);
-      document.getElementById(outputId).textContent = `Rolled: ${roll}`;
-    }
-
-    const lists = {
-      // Sample lists below — replace/expand as desired
-      humanMaleNames: ["John", "Arthur", "William"],
-      dwarfMaleNames: ["Thorin", "Borin", "Dwalin"],
-      elfMaleNames: ["Legolas", "Eldarion", "Thalion"],
-      humanFemaleNames: ["Elaine", "Aria", "Liana"],
-      dwarfFemaleNames: ["Dis", "Helga", "Bruni"],
-      elfFemaleNames: ["Galadriel", "Lúthien", "Arwen"],
-      minorLoot: ["Copper coin", "Tarnished ring"],
-      averageLoot: ["Silver necklace", "Magic scroll"],
-      majorLoot: ["Enchanted sword", "Crown of a lost king"],
-      npcMotivations: ["Revenge", "Love", "Greed"],
-      npcDescriptions: ["Male, black hair, scarred cheek", "Female, red hair, tattooed arms"],
-      encounterDifficulties: ["Easy", "Moderate", "Hard", "Deadly"],
-      wounds: ["Bruised ribs", "Sprained ankle"],
-      majorWounds: ["Broken arm", "Blinded eye"],
-      medievalInsults: ["Thou art a boil on the king's buttock!"],
-      medievalGreetings: ["Hail and well met!"],
-      npcDispositions: [
-        { value: "Friendly", weight: 40 },
-        { value: "Neutral", weight: 40 },
-        { value: "Hostile", weight: 20 }
-      ],
-      weatherOptions: [
-        { value: "Clear skies", weight: 50 },
-        { value: "Light rain", weight: 25 },
-        { value: "Thunderstorm", weight: 15 },
-        { value: "Breezy and sunny", weight: 10 }
-      ],
-      forestEncounters: [
-        { value: "Bandit ambush", weight: 20 },
-        { value: "Wandering druid", weight: 30 },
-        { value: "Wolf pack", weight: 50 }
-      ],
-      mountainEncounters: [
-        { value: "Avalanche", weight: 10 },
-        { value: "Mountain goat stampede", weight: 30 },
-        { value: "Giant eagle sighting", weight: 60 }
-      ],
-      plainsEncounters: [
-        { value: "Nomadic raiders", weight: 25 },
-        { value: "Wild horses", weight: 40 },
-        { value: "Dust storm", weight: 35 }
-      ],
-      jungleEncounters: [
-        { value: "Venomous snake", weight: 40 },
-        { value: "Tribal scouts", weight: 35 },
-        { value: "Quicksand", weight: 25 }
-      ],
-      swampEncounters: [
-        { value: "Swarm of biting insects", weight: 40 },
-        { value: "Bog monster", weight: 30 },
-        { value: "Hidden sinkhole", weight: 30 }
-      ],
-      roadEncounters: [
-        { value: "Merchant caravan", weight: 50 },
-        { value: "Broken wagon", weight: 30 },
-        { value: "Toll collectors", weight: 20 }
-      ],
-      urbanEncounters: [
-        { value: "Street performers", weight: 40 },
-        { value: "Pickpocket attempt", weight: 30 },
-        { value: "Guard patrol", weight: 30 }
-      ]
+    // Auto-generate all on page load
+    window.onload = () => {
+      Object.keys(data).forEach(type => generate(type));
     };
   </script>
 </body>
