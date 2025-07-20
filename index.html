@@ -140,10 +140,6 @@
       
       { id: 'femaleElf', label: 'Female Elf Name', options: ["Arwen", "Luthien", "Galadriel", "Elenwe", "Nimrodel"] },
 
-      { id: 'minorLoot', label: 'Minor Loot', options: ["A pouch of silver coins", "A rusty dagger", "A faded map", "A healing herb", "A ring of unknown origin"] },
-      { id: 'averageLoot', label: 'Average Loot', options: ["A +1 sword", "Bag of holding", "Scroll of fireball", "Amulet of protection", "50 gold pieces"] },
-      { id: 'majorLoot', label: 'Major Loot', options: ["Holy Avenger", "Ring of Three Wishes", "Staff of Power", "Deck of Many Things", "Tome of Clear Thought"] },
-
       { id: 'npcDisposition', label: 'NPC Disposition', options: [
         ["Friendly", 15], ["Neutral", 40], ["Not friendly", 25], ["Hostile", 10], ["Helpful", 10]
       ], weighted: true },
@@ -153,7 +149,7 @@
       ], weighted: true },
 
       { id: 'forestEncounter', label: 'Forest Encounter', options: [
-        ["Bandit ambush", 20], ["Wandering druid", 15], ["Pack of wolves", 25], ["Mysterious lights", 10], ["Fey trickster", 10], ["Abandoned camp", 20]
+        ["Nothing", 30], ["Pack of wolves", 4], ["Poisonous Insect", 15], ["Bear", 4], ["Large Bear", 3], ["Abandoned camp", 5], ["Giant Spider", 5], ["Berries (edible)", 10], ["Berries (poisonous)", 10], ["Poisonous Plant", 10]
       ], weighted: true },
 
       { id: 'mountainEncounter', label: 'Mountain Encounter', options: [
@@ -189,13 +185,19 @@
       { id: 'd100', label: 'D100 Roll', options: Array.from({ length: 100 }, (_, i) => i + 1) },
       { id: 'd20', label: 'D20 Roll', options: Array.from({ length: 20 }, (_, i) => i + 1) },
 
-      { id: 'difficulty', label: 'Encounter Difficulty', options: ["Trivial", "Easy", "Moderate", "Hard", "Deadly"] },
+      { id: 'difficulty', label: 'Encounter Difficulty', options: ["Easy", "Moderate", "Difficult", "Extremely Difficult"] },
       { id: 'wound', label: 'Wound', options: ["Bruised arm", "Twisted ankle", "Black eye", "Bloody nose", "Dislocated shoulder"] },
       { id: 'majorWound', label: 'Major Wound', options: ["Broken leg", "Internal bleeding", "Blinded eye", "Cracked ribs", "Severed finger"] },
 
       { id: 'medievalInsult', label: 'Medieval Insult', options: ["Thou art a boil-brained knave!", "Thy wit's as thick as a castle wall.", "You cur-dog of a hedge-born clotpole!", "Thou reeky, sheep-biting scullion!", "Away, you saucy, common-kissing knave!"] },
 
       { id: 'medievalGreeting', label: 'Medieval Greeting', options: ["Well met, good traveler!", "Hail and well met!", "Good morrow to thee.", "Blessings upon your path.", "May your sword stay sharp."] }
+   
+      { id: 'minorLoot', label: 'Minor Loot', options: ["A pouch of silver coins", "A rusty dagger", "A faded map", "A healing herb", "A ring of unknown origin"] },
+      { id: 'averageLoot', label: 'Average Loot', options: ["A +1 sword", "Bag of holding", "Scroll of fireball", "Amulet of protection", "50 gold pieces"] },
+      { id: 'majorLoot', label: 'Major Loot', options: ["Holy Avenger", "Ring of Three Wishes", "Staff of Power", "Deck of Many Things", "Tome of Clear Thought"] },
+
+    
     ];
 
     function weightedRandom(options) {
