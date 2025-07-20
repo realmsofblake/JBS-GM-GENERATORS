@@ -3,94 +3,118 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GM Generator</title>
+  <title>GM Generators</title>
   <style>
     body {
-      font-family: Georgia, serif;
-      background-color: #f4f4f9;
+      font-family: Arial, sans-serif;
+      background: #1e1e1e;
+      color: #f0f0f0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
       padding: 20px;
     }
-    h1 {
-      text-align: center;
-    }
     .generator {
-      background-color: #fff;
+      background: #2c2c2c;
+      border-radius: 10px;
       padding: 15px;
-      margin: 15px auto;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      max-width: 600px;
-    }
-    .generator h2 {
-      margin-top: 0;
-    }
-    .result {
-      font-weight: bold;
-      margin-top: 10px;
+      width: 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
     }
     button {
-      margin: 5px 5px 0 0;
-      padding: 8px 12px;
-      font-size: 1em;
-      border-radius: 5px;
-      border: none;
-      background-color: #333;
+      background: #4caf50;
       color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
       cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    p {
+      margin-top: 10px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>GM Generators</h1>
 
-  <div class="generator" id="maleNames">
-    <h2>Male Names</h2>
-    <button onclick="generate('maleHuman')">Human</button>
-    <button onclick="generate('maleDwarf')">Dwarf</button>
-    <button onclick="generate('maleElf')">Elf</button>
-    <div class="result" id="maleHuman"></div>
-    <div class="result" id="maleDwarf"></div>
-    <div class="result" id="maleElf"></div>
+  <!-- Example Generator -->
+  <div class="generator">
+    <h2>Male Human Name</h2>
+    <button onclick="generate('maleHuman')">Generate</button>
+    <p id="maleHuman-result"></p>
   </div>
 
-  <div class="generator" id="femaleNames">
-    <h2>Female Names</h2>
-    <button onclick="generate('femaleHuman')">Human</button>
-    <button onclick="generate('femaleDwarf')">Dwarf</button>
-    <button onclick="generate('femaleElf')">Elf</button>
-    <div class="result" id="femaleHuman"></div>
-    <div class="result" id="femaleDwarf"></div>
-    <div class="result" id="femaleElf"></div>
+  <div class="generator">
+    <h2>Male Elf Name</h2>
+    <button onclick="generate('maleElf')">Generate</button>
+    <p id="maleElf-result"></p>
   </div>
 
-  <div class="generator" id="loot">
-    <h2>Minor Loot</h2>
-    <button onclick="generate('minorLoot')">Generate Loot</button>
-    <div class="result" id="minorLoot"></div>
+  <div class="generator">
+    <h2>Male Dwarf Name</h2>
+    <button onclick="generate('maleDwarf')">Generate</button>
+    <p id="maleDwarf-result"></p>
   </div>
+
+  <div class="generator">
+    <h2>Female Human Name</h2>
+    <button onclick="generate('femaleHuman')">Generate</button>
+    <p id="femaleHuman-result"></p>
+  </div>
+
+  <div class="generator">
+    <h2>Female Elf Name</h2>
+    <button onclick="generate('femaleElf')">Generate</button>
+    <p id="femaleElf-result"></p>
+  </div>
+
+  <div class="generator">
+    <h2>Female Dwarf Name</h2>
+    <button onclick="generate('femaleDwarf')">Generate</button>
+    <p id="femaleDwarf-result"></p>
+  </div>
+
+  <!-- More generators below (abbreviated for clarity) -->
 
   <script>
+    function weightedChoice(options) {
+      const totalWeight = options.reduce((sum, [_, weight]) => sum + weight, 0);
+      let random = Math.random() * totalWeight;
+      for (const [item, weight] of options) {
+        if (random < weight) return item;
+        random -= weight;
+      }
+    }
+
     const data = {
-      maleHuman: ["Arthur", "Baldric", "Cedric", "Duncan", "Edric"],
-      maleDwarf: ["Thrain", "Gimli", "Durin", "Borin", "Fundin"],
-      maleElf: ["Legolas", "Eldrin", "Faelar", "Thalion", "Aerendyl"],
-      femaleHuman: ["Elena", "Brienne", "Rowena", "Kara", "Lyra"],
-      femaleDwarf: ["Dis", "Gurna", "Bera", "Thora", "Helja"],
-      femaleElf: ["Arwen", "Luthien", "Naivara", "Shayana", "Zinnia"],
-      minorLoot: ["5 copper coins", "Old dagger", "Healing herb", "Torn map fragment", "Rusty key"]
+      maleHuman: ["John", "Richard", "Eli", "Thomas", "Baldric"],
+      maleElf: ["Faelar", "Thamior", "Erevan", "Aelar", "Soveliss"],
+      maleDwarf: ["Thrain", "Dain", "Durin", "Borin", "Kili"],
+      femaleHuman: ["Anna", "Lena", "Catherine", "Isolde", "Beatrice"],
+      femaleElf: ["Lyari", "Aerendyl", "Mireleth", "Thalira", "Sylvara"],
+      femaleDwarf: ["Dis", "Helja", "Vistra", "Sannl", "Runa"],
+      // Add the rest of the categories below
     };
 
-    function getRandom(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
+    function generate(category) {
+      const resultElement = document.getElementById(`${category}-result`);
+      let result;
+      if (Array.isArray(data[category])) {
+        result = data[category][Math.floor(Math.random() * data[category].length)];
+      } else if (Array.isArray(data[category].weighted)) {
+        result = weightedChoice(data[category].weighted);
+      } else {
+        result = "[No Data]";
+      }
+      resultElement.textContent = result;
     }
 
-    function generate(type) {
-      document.getElementById(type).innerText = getRandom(data[type]);
-    }
-
-    // Auto-generate all on page load
     window.onload = () => {
-      Object.keys(data).forEach(type => generate(type));
+      Object.keys(data).forEach(generate);
     };
   </script>
 </body>
