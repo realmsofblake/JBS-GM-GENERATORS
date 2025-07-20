@@ -113,8 +113,31 @@
   "Grobzog", "Muznar", "Tromguk", "Skabzit"
 ] },
 
-      { id: 'femaleHuman', label: 'Female Human Name', options: ["Isabella", "Matilda", "Eleanor", "Beatrice", "Joan"] },
-      { id: 'femaleDwarf', label: 'Female Dwarf Name', options: ["Hilda", "Bruni", "Dagna", "Frida", "Helga"] },
+      { id: 'femaleHuman', label: 'Female Human Name', options: [
+  "Elira", "Sylwen", "Maris", "Naela", "Thalira", "Virel", "Luneth", "Aurela", "Islin", "Serel",
+  "Calira", "Teyla", "Nirali", "Zareen", "Orala", "Miren", "Velia", "Ilyra", "Raviel", "Selune",
+  "Loraya", "Thiren", "Yelira", "Avenel", "Shalyn", "Kaelis", "Oriana", "Feylen", "Melira", "Tiriel",
+  "Lioren", "Havela", "Norien", "Cirella", "Emara", "Aralyn", "Zenya", "Talwen", "Vanya", "Jasira",
+  "Relia", "Elisra", "Aelira", "Soriel", "Maelis", "Venaya", "Olyra", "Ilira", "Yevana", "Trisana",
+  "Kireth", "Alenya", "Dorelle", "Serin", "Yavira", "Rionel", "Talyra", "Evalin", "Lunara", "Zephra",
+  "Amariel", "Thalyn", "Virelle", "Morena", "Naleen", "Evelynne", "Quinara", "Dariel", "Isola", "Selira",
+  "Nirelle", "Calis", "Zamira", "Vesra", "Arielle", "Helyra", "Loriel", "Wynessa", "Omira", "Elariel",
+  "Sorelle", "Faryna", "Velyn", "Mirela", "Thessara", "Inalya", "Kaela", "Orlyn", "Ylara", "Lunira",
+  "Evalira", "Mirelle", "Sylira", "Tirena", "Shalara", "Orelia", "Valyn", "Irielle", "Zanira", "Nariel"
+] },
+      { id: 'femaleDwarf', label: 'Female Dwarf Name', options: [
+  "Brunna", "Dorga", "Khilra", "Thaldra", "Morla", "Gilda", "Storga", "Brena", "Katra", "Vildra",
+  "Dagna", "Garneth", "Thurma", "Korla", "Molgra", "Farneth", "Zadra", "Brona", "Skalda", "Hulna",
+  "Druska", "Thalga", "Ormra", "Keldra", "Grunla", "Vorna", "Helga", "Durla", "Korga", "Thryna",
+  "Skarla", "Marna", "Gundra", "Dorlha", "Velga", "Bruneth", "Ulga", "Thurla", "Karni", "Dolma",
+  "Krilda", "Harneth", "Thundra", "Balni", "Gorla", "Kundra", "Dalmeth", "Fralga", "Thilda", "Nurga",
+  "Thorma", "Golna", "Brelka", "Skorna", "Zurni", "Barda", "Molna", "Kralda", "Dorika", "Valtha",
+  "Grenda", "Kurneth", "Thrilda", "Borgra", "Yelga", "Thimira", "Karneth", "Gralna", "Durga", "Krima",
+  "Branka", "Thunda", "Orrla", "Dalgra", "Vorni", "Helgra", "Thurma", "Kelna", "Zelka", "Faldra",
+  "Drilka", "Borla", "Tharna", "Velni", "Granla", "Kodra", "Mirga", "Stelda", "Tharka", "Dolvra",
+  "Frida", "Brumla", "Gundeth", "Harna", "Kelmeth", "Trilda", "Dagnaeth", "Brulna", "Skarneth", "Zorga"
+] },
+      
       { id: 'femaleElf', label: 'Female Elf Name', options: ["Arwen", "Luthien", "Galadriel", "Elenwe", "Nimrodel"] },
 
       { id: 'minorLoot', label: 'Minor Loot', options: ["A pouch of silver coins", "A rusty dagger", "A faded map", "A healing herb", "A ring of unknown origin"] },
@@ -122,11 +145,11 @@
       { id: 'majorLoot', label: 'Major Loot', options: ["Holy Avenger", "Ring of Three Wishes", "Staff of Power", "Deck of Many Things", "Tome of Clear Thought"] },
 
       { id: 'npcDisposition', label: 'NPC Disposition', options: [
-        ["Friendly", 30], ["Neutral", 40], ["Suspicious", 15], ["Hostile", 10], ["Helpful", 5]
+        ["Friendly", 15], ["Neutral", 40], ["Not friendly", 25], ["Hostile", 10], ["Helpful", 10]
       ], weighted: true },
 
       { id: 'weather', label: 'Weather', options: [
-        ["Clear skies", 50], ["Light rain", 20], ["Thunderstorm", 10], ["Foggy", 10], ["Blizzard", 5], ["Heatwave", 5]
+        ["Average weather", 50], ["Bad weather", 25], ["Very bad weather", 10], ["Extremely bad weather", 3], ["Favorable weather", 12]
       ], weighted: true },
 
       { id: 'forestEncounter', label: 'Forest Encounter', options: [
