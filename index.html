@@ -1,200 +1,205 @@
-<!DOCTYPE html>
+""<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>GM Toolkit</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GM Generators</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: Georgia, serif;
       background-color: #f4f4f4;
+      margin: 0;
       padding: 20px;
-      line-height: 1.6;
     }
-    .generator {
-      background: white;
-      margin: 20px 0;
-      padding: 15px;
-      border-radius: 10px;
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .category {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .generator h2 {
-      margin-top: 0;
-    }
     button {
-      margin: 5px 5px 10px 0;
       padding: 6px 12px;
-      font-size: 1em;
+      margin: 5px;
+      border-radius: 5px;
+      border: none;
+      background-color: #444;
+      color: white;
       cursor: pointer;
     }
-    .result {
+    button:hover {
+      background-color: #666;
+    }
+    .output {
+      margin-top: 10px;
       font-weight: bold;
-      margin-top: 5px;
     }
   </style>
 </head>
 <body>
+  <h1>GM Generators</h1>
 
-  <h1>🎲 GM Toolkit</h1>
+  <div class="category">
+    <h2>Names</h2>
+    <p><strong>Male Names:</strong></p>
+    <button onclick="generate('humanMaleNames')">Human</button>
+    <button onclick="generate('dwarfMaleNames')">Dwarf</button>
+    <button onclick="generate('elfMaleNames')">Elf</button>
+    <div class="output" id="maleNameOutput"></div>
 
-  <div id="generators"></div>
+    <p><strong>Female Names:</strong></p>
+    <button onclick="generate('humanFemaleNames')">Human</button>
+    <button onclick="generate('dwarfFemaleNames')">Dwarf</button>
+    <button onclick="generate('elfFemaleNames')">Elf</button>
+    <div class="output" id="femaleNameOutput"></div>
+  </div>
+
+  <div class="category">
+    <h2>Loot</h2>
+    <button onclick="generate('minorLoot')">Minor Loot</button>
+    <button onclick="generate('averageLoot')">Average Loot</button>
+    <button onclick="generate('majorLoot')">Major Loot</button>
+    <div class="output" id="lootOutput"></div>
+  </div>
+
+  <div class="category">
+    <h2>Encounters</h2>
+    <button onclick="generateWeighted('forestEncounters', 'forestOutput')">Forest</button>
+    <button onclick="generateWeighted('mountainEncounters', 'mountainOutput')">Mountain</button>
+    <button onclick="generateWeighted('plainsEncounters', 'plainsOutput')">Plains</button>
+    <button onclick="generateWeighted('jungleEncounters', 'jungleOutput')">Jungle</button>
+    <button onclick="generateWeighted('swampEncounters', 'swampOutput')">Swamp</button>
+    <button onclick="generateWeighted('roadEncounters', 'roadOutput')">Road</button>
+    <button onclick="generateWeighted('urbanEncounters', 'urbanOutput')">Urban</button>
+    <div class="output" id="forestOutput"></div>
+    <div class="output" id="mountainOutput"></div>
+    <div class="output" id="plainsOutput"></div>
+    <div class="output" id="jungleOutput"></div>
+    <div class="output" id="swampOutput"></div>
+    <div class="output" id="roadOutput"></div>
+    <div class="output" id="urbanOutput"></div>
+  </div>
+
+  <div class="category">
+    <h2>NPCs</h2>
+    <button onclick="generateWeighted('npcDispositions', 'npcDispositionOutput')">NPC Disposition</button>
+    <button onclick="generate('npcMotivations')">NPC Motivation</button>
+    <button onclick="generate('npcDescriptions')">NPC Description</button>
+    <div class="output" id="npcDispositionOutput"></div>
+    <div class="output" id="npcMotivationOutput"></div>
+    <div class="output" id="npcDescriptionOutput"></div>
+  </div>
+
+  <div class="category">
+    <h2>Dice Rolls</h2>
+    <button onclick="rollDie(100, 'd100Output')">Roll D100</button>
+    <button onclick="rollDie(20, 'd20Output')">Roll D20</button>
+    <div class="output" id="d100Output"></div>
+    <div class="output" id="d20Output"></div>
+  </div>
+
+  <div class="category">
+    <h2>Other</h2>
+    <button onclick="generate('encounterDifficulties')">Encounter Difficulty</button>
+    <button onclick="generate('wounds')">Wound</button>
+    <button onclick="generate('majorWounds')">Major Wound</button>
+    <button onclick="generate('medievalInsults')">Medieval Insult</button>
+    <button onclick="generate('medievalGreetings')">Medieval Greeting</button>
+    <div class="output" id="otherOutput"></div>
+  </div>
 
   <script>
-    const outputDiv = document.getElementById("generators");
-
-    // --- Name data ---
-    const maleNamesByCulture = {
-      Arthurian: ["Arthur", "Lancelot", "Gawain", "Merlin", "Tristan"],
-      Tolkien: ["Aragorn", "Boromir", "Legolas", "Thorin", "Frodo"],
-      Arabic: ["Zayd", "Hassan", "Omar", "Rashid", "Tariq"],
-      Norse: ["Erik", "Bjorn", "Loki", "Thor", "Ulf"],
-      Goblin: ["Grubnash", "Snaggle", "Zurt", "Krash", "Bliggit"],
-      Dwarven: ["Thrain", "Durin", "Balin", "Gimli", "Dwalin"],
-      Elvish: ["Faelar", "Thalor", "Aerendil", "Elarion", "Sylvas"]
-    };
-
-    const femaleNamesByCulture = {
-      Arthurian: ["Guinevere", "Morgana", "Elaine", "Isolde", "Nimue"],
-      Tolkien: ["Galadriel", "Arwen", "Eowyn", "Tauriel", "Luthien"],
-      Arabic: ["Layla", "Nadia", "Yasmin", "Amina", "Zahra"],
-      Norse: ["Freya", "Astrid", "Sigrid", "Brynhild", "Helga"],
-      Goblin: ["Wix", "Zazza", "Grilka", "Snagga", "Mog"],
-      Dwarven: ["Bruni", "Hildi", "Gilda", "Dagna", "Thorra"],
-      Elvish: ["Elaria", "Sylvara", "Nimriel", "Althaea", "Yavanna"]
-    };
-
-    function createNameCultureButtons(title, cultures, targetId) {
-      const container = document.createElement("div");
-      const label = document.createElement("h3");
-      label.textContent = title;
-      const buttons = document.createElement("div");
-      const result = document.createElement("p");
-      result.id = targetId;
-      result.className = "result";
-
-      for (let culture in cultures) {
-        const button = document.createElement("button");
-        button.textContent = culture;
-        button.onclick = () => {
-          const names = cultures[culture];
-          const name = names[Math.floor(Math.random() * names.length)];
-          result.textContent = `${name} (${culture})`;
-        };
-        buttons.appendChild(button);
-      }
-
-      container.appendChild(label);
-      container.appendChild(buttons);
-      container.appendChild(result);
-      return container;
+    function generate(listName) {
+      const item = lists[listName][Math.floor(Math.random() * lists[listName].length)];
+      const outputId = listName.includes("Male") ? "maleNameOutput" :
+                       listName.includes("Female") ? "femaleNameOutput" :
+                       listName.includes("Loot") ? "lootOutput" :
+                       listName.includes("npcMotivations") ? "npcMotivationOutput" :
+                       listName.includes("npcDescriptions") ? "npcDescriptionOutput" :
+                       listName.includes("encounterDifficulties") || listName.includes("wounds") || listName.includes("Insult") || listName.includes("Greeting") ? "otherOutput" : "output";
+      document.getElementById(outputId).textContent = item;
     }
 
-  const weatherOptions = [
-  { value: "Clear skies", weight: 50 },
-  { value: "Rain", weight: 25 },
-  { value: "Thunderstorm", weight: 15 },
-  { value: "Breezy and sunny", weight: 10 }
-];
+    function generateWeighted(listName, outputId) {
+      const pool = lists[listName].flatMap(item => Array(item.weight).fill(item.value));
+      const result = pool[Math.floor(Math.random() * pool.length)];
+      document.getElementById(outputId).textContent = result;
+    }
 
-    // --- Main Generators ---
-    const generators = {
-      "Minor Loot": ["A handful of silver coins", "A rusty dagger", "A healing herb", "A common scroll", "A torch"],
-      "Average Loot": ["A pouch of gold", "A short sword +1", "A potion of healing", "A map fragment", "A set of thieves' tools"],
-      "Major Loot": ["Legendary sword", "Bag of Holding", "Ring of Invisibility", "Ancient spellbook", "Dragon egg"],
-      "NPC Disposition": ["Friendly", "Hostile", "Suspicious", "Desperate", "Deceitful", "Indifferent", "Curious", "Arrogant"],
-      "Weather": ["Clear skies", "Heavy rain", "Thunderstorm", "Snowstorm", "Dense fog", "Blistering heat", "Bitter cold"],
-      "Wilderness Encounter (Forest)": ["Bandits ambush", "Lost merchant", "Wolf pack", "Ancient tree spirit", "Elven scouts"],
-      "Wilderness Encounter (Mountain)": ["Rockslide", "Mountain goat herd", "Griffon attack", "Hermit's cave", "Dwarven outpost"],
-      "Wilderness Encounter (Plains)": ["Horse stampede", "Traveling circus", "Nomadic tribe", "Dust storm", "Goblin raiders"],
-      "Wilderness Encounter (Jungle)": ["Giant snake", "Poisonous plants", "Lost temple", "Tribal hunters", "Swarm of insects"],
-      "Wilderness Encounter (Swamp)": ["Will-o'-the-wisps", "Swamp hag", "Sinking ground", "Crocodile attack", "Haunted ruins"],
-      "Road Encounter": ["Traveling bard", "Broken-down cart", "Noble in disguise", "Merchant caravan", "Highway robbery"],
-      "NPC Motivation": ["Revenge", "Justice", "Wealth", "Love", "Escape", "Fame", "Knowledge", "Power", "Redemption"],
-      "NPC Physical Description": [
-        "Male, black hair, scar across the face",
-        "Female, red braided hair, mechanical arm",
-        "Nonbinary, white-blond hair, glowing eyes",
-        "Male, bald, missing teeth",
-        "Female, curly brown hair, tattooed arms",
-        "Male, long gray beard, jeweled eyepatch",
-        "Female, silver hair, speaks with birds"
+    function rollDie(sides, outputId) {
+      const roll = Math.ceil(Math.random() * sides);
+      document.getElementById(outputId).textContent = `Rolled: ${roll}`;
+    }
+
+    const lists = {
+      // Sample lists below — replace/expand as desired
+      humanMaleNames: ["John", "Arthur", "William"],
+      dwarfMaleNames: ["Thorin", "Borin", "Dwalin"],
+      elfMaleNames: ["Legolas", "Eldarion", "Thalion"],
+      humanFemaleNames: ["Elaine", "Aria", "Liana"],
+      dwarfFemaleNames: ["Dis", "Helga", "Bruni"],
+      elfFemaleNames: ["Galadriel", "Lúthien", "Arwen"],
+      minorLoot: ["Copper coin", "Tarnished ring"],
+      averageLoot: ["Silver necklace", "Magic scroll"],
+      majorLoot: ["Enchanted sword", "Crown of a lost king"],
+      npcMotivations: ["Revenge", "Love", "Greed"],
+      npcDescriptions: ["Male, black hair, scarred cheek", "Female, red hair, tattooed arms"],
+      encounterDifficulties: ["Easy", "Moderate", "Hard", "Deadly"],
+      wounds: ["Bruised ribs", "Sprained ankle"],
+      majorWounds: ["Broken arm", "Blinded eye"],
+      medievalInsults: ["Thou art a boil on the king's buttock!"],
+      medievalGreetings: ["Hail and well met!"],
+      npcDispositions: [
+        { value: "Friendly", weight: 40 },
+        { value: "Neutral", weight: 40 },
+        { value: "Hostile", weight: 20 }
       ],
-      "D100 Roll": () => Math.floor(Math.random() * 100) + 1,
-      "D20 Roll": () => Math.floor(Math.random() * 20) + 1,
-      "Encounter Difficulty": ["Trivial", "Easy", "Moderate", "Hard", "Deadly", "Mythic"],
-      "Wound": ["Cut across the arm", "Bruised ribs", "Sprained ankle", "Bloody nose", "Minor burn"],
-      "Major Wound": ["Broken leg", "Punctured lung", "Blinded in one eye", "Severed hand", "Skull fracture"],
-      "Medieval Insult": [
-        "Thou art as useless as a screen door on a castle wall!",
-        "Thy brain is as dry as last year's biscuit.",
-        "Thou lumpish hedge-born scullion!",
-        "Thou reeky flap-mouthed knave!",
-        "Thou art as crooked as a dog's hind leg!"
+      weatherOptions: [
+        { value: "Clear skies", weight: 50 },
+        { value: "Light rain", weight: 25 },
+        { value: "Thunderstorm", weight: 15 },
+        { value: "Breezy and sunny", weight: 10 }
       ],
-      "Medieval Greeting": [
-        "Good morrow, traveler!",
-        "Hail and well met!",
-        "May thy path be free of shadows.",
-        "Peace upon thy hearth.",
-        "Fortune favor thee."
+      forestEncounters: [
+        { value: "Bandit ambush", weight: 20 },
+        { value: "Wandering druid", weight: 30 },
+        { value: "Wolf pack", weight: 50 }
+      ],
+      mountainEncounters: [
+        { value: "Avalanche", weight: 10 },
+        { value: "Mountain goat stampede", weight: 30 },
+        { value: "Giant eagle sighting", weight: 60 }
+      ],
+      plainsEncounters: [
+        { value: "Nomadic raiders", weight: 25 },
+        { value: "Wild horses", weight: 40 },
+        { value: "Dust storm", weight: 35 }
+      ],
+      jungleEncounters: [
+        { value: "Venomous snake", weight: 40 },
+        { value: "Tribal scouts", weight: 35 },
+        { value: "Quicksand", weight: 25 }
+      ],
+      swampEncounters: [
+        { value: "Swarm of biting insects", weight: 40 },
+        { value: "Bog monster", weight: 30 },
+        { value: "Hidden sinkhole", weight: 30 }
+      ],
+      roadEncounters: [
+        { value: "Merchant caravan", weight: 50 },
+        { value: "Broken wagon", weight: 30 },
+        { value: "Toll collectors", weight: 20 }
+      ],
+      urbanEncounters: [
+        { value: "Street performers", weight: 40 },
+        { value: "Pickpocket attempt", weight: 30 },
+        { value: "Guard patrol", weight: 30 }
       ]
     };
-
-    function createGeneratorBox(title, content) {
-      const container = document.createElement("div");
-      container.className = "generator";
-
-      const heading = document.createElement("h2");
-      heading.textContent = title;
-
-      const result = document.createElement("p");
-      result.id = title.replace(/\s+/g, '-') + "-result";
-      result.className = "result";
-
-      const button = document.createElement("button");
-      button.textContent = "Generate";
-      button.onclick = () => {
-        result.textContent = generateContent(title);
-      };
-
-      container.appendChild(heading);
-      container.appendChild(result);
-      container.appendChild(button);
-      outputDiv.appendChild(container);
-    }
-
-    function generateContent(category) {
-      const options = generators[category];
-      if (typeof options === "function") {
-        return options();
-      } else {
-        return options[Math.floor(Math.random() * options.length)];
-      }
-    }
-
-    // --- Page Load ---
-    window.onload = function () {
-      // Create Name Generator Box with culture buttons
-      const nameContainer = document.createElement("div");
-      nameContainer.className = "generator";
-      const heading = document.createElement("h2");
-      heading.textContent = "Name Generator";
-      nameContainer.appendChild(heading);
-
-      const maleRow = createNameCultureButtons("Male Names", maleNamesByCulture, "male-name-result");
-      const femaleRow = createNameCultureButtons("Female Names", femaleNamesByCulture, "female-name-result");
-
-      nameContainer.appendChild(maleRow);
-      nameContainer.appendChild(femaleRow);
-      outputDiv.appendChild(nameContainer);
-
-      // Generate other tools
-      for (let title in generators) {
-        createGeneratorBox(title, generateContent(title));
-        const resultId = title.replace(/\s+/g, '-') + "-result";
-        document.getElementById(resultId).textContent = generateContent(title);
-      }
-    };
   </script>
-
 </body>
 </html>
