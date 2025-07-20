@@ -1,248 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GM Generators</title>
+  <meta charset="UTF-8">
+  <title>JBS GM Generators</title>
   <style>
-
     body {
-  /* keep existing styles */
-  font-family: 'Georgia', serif;
-  background-color: #f4f1e8;
-  color: #333;
-  padding: 20px;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
+      font-family: Arial, sans-serif;
+      padding: 1rem;
+      background: #f4f4f4;
+    }
     h1 {
       text-align: center;
     }
-
-#generators {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  width: 100%;
-  max-width: 1200px;
-}
-
-.generator {
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-    
-    .button {
-      margin-top: 10px;
-      padding: 10px 15px;
-      font-size: 1em;
-      background-color: #4caf50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
     }
-    .output {
-      margin-top: 10px;
+    .box {
+      background: white;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .result {
+      margin-top: 0.5rem;
       font-weight: bold;
+      color: #333;
+    }
+    button {
+      margin: 0.25rem 0.25rem 0 0;
     }
   </style>
 </head>
 <body>
-  <h1>GM Generators</h1>
-  <div id="generators"></div>
+  <h1>JBS GM Generators</h1>
+  <div class="grid" id="generatorGrid"></div>
 
   <script>
-    const generators = [
-      { id: 'maleHuman', label: 'Male Human Name', options: [
-  "Elarin", "Thaven", "Solmar", "Niric", "Varunel", "Loen", "Tirien", "Calor", "Marion", "Rilven",
-  "Auren", "Fenric", "Ilanor", "Dariel", "Molien", "Seron", "Vaelor", "Lioren", "Kelmir", "Torien",
-  "Ashal", "Nareth", "Zerel", "Yondel", "Orimar", "Selric", "Thelon", "Imrel", "Quaren", "Elovar",
-  "Mirel", "Thalos", "Alonir", "Jorlen", "Navric", "Silven", "Relian", "Damar", "Lorien", "Halven",
-  "Brivan", "Orelas", "Tameric", "Vendal", "Noliar", "Eriven", "Kiral", "Zalin", "Havrin", "Malion",
-  "Renior", "Lazric", "Elion", "Talrin", "Ismir", "Corvan", "Veyric", "Aridel", "Toven", "Emrak",
-  "Feylor", "Ilorin", "Galeth", "Dorian", "Kalvor", "Yevric", "Norian", "Therin", "Amelric", "Valien",
-  "Samarin", "Quenril", "Toriel", "Miron", "Voriel", "Delric", "Tiral", "Wenric", "Silor", "Kelion",
-  "Lazrin", "Verol", "Emdir", "Nirel", "Omarin", "Isador", "Harvin", "Rellen", "Aurel", "Joric",
-  "Zethan", "Calven", "Ithiel", "Marrel", "Lorik", "Tirion", "Serian", "Halric", "Narev", "Varell",
-  "Rhonel", "Yorien", "Omric", "Ellisar", "Darel", "Thrain"
-] },
-      { id: 'maleBarbarian', label: 'Male Barbarian Name', options: [
-  "Tharnok", "Vorgar", "Khaldric", "Drogar", "Bramul", "Skorvan", "Uthrek", "Garnokh", "Hrodan", "Zorvak",
-  "Karnul", "Vadran", "Mokhtar", "Tulgor", "Rhazim", "Ornek", "Durvag", "Krelgar", "Fenruk", "Jorvak",
-  "Brughor", "Thozan", "Drelgar", "Morveth", "Kragnar", "Zhulgar", "Odran", "Thurog", "Varnak", "Bolgrin",
-  "Drakmar", "Kelzun", "Zurnak", "Rhovar", "Marnok", "Yorgrim", "Tharkul", "Gorvash", "Ulmar", "Dughan",
-  "Harnok", "Vorgrim", "Zarak", "Khurdan", "Throgar", "Galruk", "Orveth", "Valdrik", "Grondan", "Zorhul",
-  "Vrakor", "Jundrak", "Skallum", "Brantar", "Molgar", "Urgrim", "Drunok", "Ruldar", "Karneth", "Thundrak",
-  "Grelzar", "Barkhul", "Zarnok", "Drothar", "Thargrim", "Kraghul", "Vothrek", "Skarnak", "Ulthar", "Korvan",
-  "Drogul", "Grashok", "Norgrim", "Vakhor", "Tarnak", "Drakthor", "Ulgarn", "Ravok", "Zuthran", "Meldrik",
-  "Thrazhul", "Horvak", "Brulgar", "Skorgun", "Velgorn", "Durnak", "Kharnok", "Gralzor", "Vorhul", "Thalgrin",
-  "Molvar", "Durgok", "Rhazgor", "Zulgarn", "Frundal", "Golthar", "Hulvek", "Karzug", "Thamrak", "Ogrin",
-  "Yuldor", "Bargron", "Krelzok", "Vundrak", "Zolmar", "Dregnok", "Thurlok", "Murnok", "Ulzorn", "Brogath"
-] },
-      { id: 'maleDwarf', label: 'Male Dwarf Name', options: [
-  "Thrainik", "Brogar", "Dolvun", "Kazruk", "Bramdur", "Kheldor", "Darrun", "Thorek", "Grundin", "Morgran",
-  "Barvor", "Stornak", "Durvik", "Marnor", "Gorlan", "Harnok", "Dwalgar", "Thrandek", "Brondal", "Kargrom",
-  "Norvuk", "Grumbor", "Falkrin", "Baldek", "Korgrin", "Tharnor", "Vorgrim", "Uldrak", "Drazik", "Hulgarn",
-  "Thramli", "Balgrom", "Rurik", "Kelbar", "Drunor", "Kuldain", "Odrim", "Graldor", "Torbar", "Borgrin",
-  "Dornar", "Mogruk", "Hordain", "Kradin", "Thurlok", "Garnik", "Dolfrin", "Skorak", "Bhelron", "Rundar",
-  "Torbik", "Farnor", "Veldrak", "Krunak", "Dargrin", "Mundek", "Dravor", "Balgrum", "Skarnor", "Bregan",
-  "Thorlin", "Guldrik", "Brunar", "Kramlik", "Harthur", "Durnik", "Braldin", "Molgrin", "Drolgar", "Thormek",
-  "Granzik", "Kelgrin", "Ormrik", "Tharnin", "Dalgrom", "Vorbar", "Grumlik", "Hordrim", "Thuvor", "Vurnak",
-  "Norgrim", "Krovik", "Garnum", "Throrn", "Golbek", "Dalkar", "Durthal", "Bramok", "Kilgrom", "Storvik",
-  "Hurgan", "Trovun", "Faldrik", "Zundrak", "Bronrik", "Thurvar", "Dwergar", "Morrik", "Kargan", "Dolgrin",
-  "Vardek", "Tholgrim", "Burzik", "Granek", "Thrainar", "Kurgon"
-] },
-      
-      { id: 'goblinorc', label: 'Goblin/Orc Name', options: [
-  "Grubnak", "Snagga", "Morkul", "Drashik", "Thozrak", "Bliggut", "Rukmar", "Snortha", "Karguk", "Vrosh",
-  "Brakka", "Zugnash", "Trollok", "Grizzik", "Harnug", "Zurlok", "Drogar", "Snivven", "Gloknar", "Krenth",
-  "Bogmak", "Skorcha", "Urdrak", "Muzgut", "Thragg", "Norzal", "Blorth", "Krugma", "Skrinch", "Druzrak",
-  "Ograk", "Blazgar", "Snokk", "Garzug", "Warkul", "Dregmak", "Runk", "Zobgut", "Karnush", "Thurbog",
-  "Murzog", "Grobnar", "Krushnik", "Grintok", "Ugmag", "Snatcha", "Zurk", "Glabzug", "Ornak", "Skarnok",
-  "Vragguk", "Hrothmak", "Smelg", "Bralluk", "Skibzik", "Zarblat", "Dumrog", "Gurzlak", "Klarg", "Snurg",
-  "Vaggok", "Thrimnak", "Urkash", "Brugluk", "Krozzik", "Gruld", "Zoknar", "Snorble", "Dralg", "Murklash",
-  "Thrugma", "Slikzit", "Orzguk", "Snibnar", "Glorbag", "Traggit", "Bruklaz", "Ghorznak", "Wurzok", "Skrod",
-  "Klugrak", "Throgg", "Brotz", "Skraga", "Ugdug", "Frinzok", "Knarbag", "Grushnok", "Zugrul", "Morgzit",
-  "Skizzgut", "Drublok", "Rakkzug", "Vornak", "Chugmog", "Skalgrit", "Nograt", "Thrulbog", "Grolg", "Durgnak",
-  "Grobzog", "Muznar", "Tromguk", "Skabzit"
-] },
-
-      { id: 'femaleHuman', label: 'Female Human Name', options: [
-  "Elira", "Sylwen", "Maris", "Naela", "Thalira", "Virel", "Luneth", "Aurela", "Islin", "Serel",
-  "Calira", "Teyla", "Nirali", "Zareen", "Orala", "Miren", "Velia", "Ilyra", "Raviel", "Selune",
-  "Loraya", "Thiren", "Yelira", "Avenel", "Shalyn", "Kaelis", "Oriana", "Feylen", "Melira", "Tiriel",
-  "Lioren", "Havela", "Norien", "Cirella", "Emara", "Aralyn", "Zenya", "Talwen", "Vanya", "Jasira",
-  "Relia", "Elisra", "Aelira", "Soriel", "Maelis", "Venaya", "Olyra", "Ilira", "Yevana", "Trisana",
-  "Kireth", "Alenya", "Dorelle", "Serin", "Yavira", "Rionel", "Talyra", "Evalin", "Lunara", "Zephra",
-  "Amariel", "Thalyn", "Virelle", "Morena", "Naleen", "Evelynne", "Quinara", "Dariel", "Isola", "Selira",
-  "Nirelle", "Calis", "Zamira", "Vesra", "Arielle", "Helyra", "Loriel", "Wynessa", "Omira", "Elariel",
-  "Sorelle", "Faryna", "Velyn", "Mirela", "Thessara", "Inalya", "Kaela", "Orlyn", "Ylara", "Lunira",
-  "Evalira", "Mirelle", "Sylira", "Tirena", "Shalara", "Orelia", "Valyn", "Irielle", "Zanira", "Nariel"
-] },
-      { id: 'femaleDwarf', label: 'Female Dwarf Name', options: [
-  "Brunna", "Dorga", "Khilra", "Thaldra", "Morla", "Gilda", "Storga", "Brena", "Katra", "Vildra",
-  "Dagna", "Garneth", "Thurma", "Korla", "Molgra", "Farneth", "Zadra", "Brona", "Skalda", "Hulna",
-  "Druska", "Thalga", "Ormra", "Keldra", "Grunla", "Vorna", "Helga", "Durla", "Korga", "Thryna",
-  "Skarla", "Marna", "Gundra", "Dorlha", "Velga", "Bruneth", "Ulga", "Thurla", "Karni", "Dolma",
-  "Krilda", "Harneth", "Thundra", "Balni", "Gorla", "Kundra", "Dalmeth", "Fralga", "Thilda", "Nurga",
-  "Thorma", "Golna", "Brelka", "Skorna", "Zurni", "Barda", "Molna", "Kralda", "Dorika", "Valtha",
-  "Grenda", "Kurneth", "Thrilda", "Borgra", "Yelga", "Thimira", "Karneth", "Gralna", "Durga", "Krima",
-  "Branka", "Thunda", "Orrla", "Dalgra", "Vorni", "Helgra", "Thurma", "Kelna", "Zelka", "Faldra",
-  "Drilka", "Borla", "Tharna", "Velni", "Granla", "Kodra", "Mirga", "Stelda", "Tharka", "Dolvra",
-  "Frida", "Brumla", "Gundeth", "Harna", "Kelmeth", "Trilda", "Dagnaeth", "Brulna", "Skarneth", "Zorga"
-] },
-      
-      { id: 'femaleElf', label: 'Female Elf Name', options: ["Arwen", "Luthien", "Galadriel", "Elenwe", "Nimrodel"] },
-
-      { id: 'npcDisposition', label: 'NPC Disposition', options: [
-        ["Friendly", 15], ["Neutral", 40], ["Not friendly", 25], ["Hostile", 10], ["Helpful", 10]
-      ], weighted: true },
-
-      { id: 'weather', label: 'Weather', options: [
-        ["Average weather", 50], ["Bad weather", 25], ["Very bad weather", 10], ["Extremely bad weather", 3], ["Favorable weather", 12]
-      ], weighted: true },
-
-      { id: 'forestEncounter', label: 'Forest Encounter', options: [
-        ["Nothing", 30], ["Pack of wolves", 4], ["Poisonous Insect", 15], ["Bear", 4], ["Large Bear", 3], ["Abandoned camp", 5], ["Giant Spider", 5], ["Edible Berries", 10], ["Poisonous Berries", 10], ["Poisonous Plant", 10]
-      ], weighted: true },
-
-      { id: 'mountainEncounter', label: 'Mountain Encounter', options: [
-        ["Rockslide", 20], ["Mountain lion", 25], ["Hermit", 10], ["Giant eagle", 15], ["Cave troll", 10], ["Miner's ghost", 20]
-      ], weighted: true },
-
-      { id: 'plainsEncounter', label: 'Plains Encounter', options: [
-        ["Grazing herd", 30], ["Nomadic tribe", 20], ["Dust storm", 10], ["Gnoll raiders", 15], ["Traveling merchant", 15], ["Ancient ruin", 10]
-      ], weighted: true },
-
-      { id: 'jungleEncounter', label: 'Jungle Encounter', options: [
-        ["Giant snake", 25], ["Quicksand", 20], ["Tribal scouts", 15], ["Lost temple", 10], ["Swarm of insects", 20], ["Jungle spirit", 10]
-      ], weighted: true },
-
-      { id: 'swampEncounter', label: 'Swamp Encounter', options: [
-        ["Will-o'-wisp", 15], ["Bog hag", 10], ["Alligator", 25], ["Sinking ground", 20], ["Lost traveler", 20], ["Rotting corpse", 10]
-      ], weighted: true },
-
-      { id: 'roadEncounter', label: 'Road Encounter', options: [
-        ["Wagon with broken wheel", 25], ["Merchant caravan", 20], ["Traveling bard", 15], ["Toll collectors", 15], ["Ambush", 15], ["Refugees", 10]
-      ], weighted: true },
-
-      { id: 'urbanEncounter', label: 'Urban Encounter', options: [
-        ["Pickpocket", 20], ["Street performance", 20], ["Drunken brawl", 15], ["Lost child", 10], ["Guard patrol", 15], ["Secret meeting", 20]
-      ], weighted: true },
-
-      { id: 'npcMotivation', label: 'NPC Motivation', options: ["Revenge", "Greed", "Justice", "Love", "Power", "Survival", "Curiosity", "Redemption"] },
-
-      { id: 'npcDescription', label: 'NPC Description', options: [
-        "Male, black hair, scarred face", "Female, red hair, silver eyes", "Nonbinary, blond hair, missing arm", "Male, bald, elaborate tattoo", "Female, gray hair, glowing eyes"
-      ] },
-
-      { id: 'd100', label: 'D100 Roll', options: Array.from({ length: 100 }, (_, i) => i + 1) },
-      { id: 'd20', label: 'D20 Roll', options: Array.from({ length: 20 }, (_, i) => i + 1) },
-
-      { id: 'difficulty', label: 'Encounter Difficulty', options: ["Easy", "Moderate", "Difficult", "Extremely Difficult"] },
-      { id: 'wound', label: 'Wound', options: ["Bruised arm", "Twisted ankle", "Black eye", "Bloody nose", "Dislocated shoulder"] },
-      { id: 'majorWound', label: 'Major Wound', options: ["Broken leg", "Internal bleeding", "Blinded eye", "Cracked ribs", "Severed finger"] },
-
-      { id: 'medievalInsult', label: 'Medieval Insult', options: ["Thou art a boil-brained knave!", "Thy wit's as thick as a castle wall.", "You cur-dog of a hedge-born clotpole!", "Thou reeky, sheep-biting scullion!", "Away, you saucy, common-kissing knave!"] },
-
-      { id: 'medievalGreeting', label: 'Medieval Greeting', options: ["Well met, good traveler!", "Hail and well met!", "Good morrow to thee.", "Blessings upon your path.", "May your sword stay sharp."] }
-   
-      { id: 'minorLoot', label: 'Minor Loot', options: ["A pouch of silver coins", "A rusty dagger", "A faded map", "A healing herb", "A ring of unknown origin"] },
-      { id: 'averageLoot', label: 'Average Loot', options: ["A +1 sword", "Bag of holding", "Scroll of fireball", "Amulet of protection", "50 gold pieces"] },
-      { id: 'majorLoot', label: 'Major Loot', options: ["Holy Avenger", "Ring of Three Wishes", "Staff of Power", "Deck of Many Things", "Tome of Clear Thought"] },
-
-    
-    ];
-
-    function weightedRandom(options) {
-      const totalWeight = options.reduce((sum, [_, weight]) => sum + weight, 0);
-      let r = Math.random() * totalWeight;
-      for (const [value, weight] of options) {
-        if ((r -= weight) < 0) return value;
-      }
+    // --- Helper Functions ---
+    function getRandomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    function generateAll() {
-      generators.forEach(gen => {
-        const outputEl = document.getElementById(`output-${gen.id}`);
-        const result = gen.weighted ? weightedRandom(gen.options) : gen.options[Math.floor(Math.random() * gen.options.length)];
-        outputEl.textContent = result;
+    function getWeightedRandomItem(options) {
+      const expanded = [];
+      options.forEach(opt => {
+        for (let i = 0; i < opt.weight; i++) {
+          expanded.push(opt.value);
+        }
       });
+      return getRandomItem(expanded);
     }
 
-    function createGenerators() {
-      const container = document.getElementById('generators');
-      generators.forEach(gen => {
-        const div = document.createElement('div');
-        div.className = 'generator';
+    // --- Generator Categories ---
+    const generators = {
+      "Male Name (Human)": ["John", "Edric", "Roland", "Balin", "Gareth"],
+      "Male Name (Elf)": ["Theren", "Eldrin", "Felarion", "Galion", "Laeroth"],
+      "Male Name (Dwarf)": ["Thrain", "Dorin", "Kargan", "Bofur", "Grundi"],
+      "Female Name (Human)": ["Elena", "Rowena", "Isolde", "Marion", "Brida"],
+      "Female Name (Elf)": ["Aeris", "Luthien", "Sylva", "Nimriel", "Yavanna"],
+      "Female Name (Dwarf)": ["Dis", "Helga", "Breda", "Inga", "Gurda"],
 
-        const button = document.createElement('button');
-        button.className = 'button';
-        button.textContent = gen.label;
-        button.onclick = () => {
-          const outputEl = document.getElementById(`output-${gen.id}`);
-          const result = gen.weighted ? weightedRandom(gen.options) : gen.options[Math.floor(Math.random() * gen.options.length)];
-          outputEl.textContent = result;
-        };
+      "Minor Loot": ["Silver ring", "Old scroll", "Small pouch of gems"],
+      "Average Loot": ["Chainmail armor", "Spellbook", "Potion pack"],
+      "Major Loot": ["Magical sword", "Dragon egg", "Ancient relic"],
 
-        const output = document.createElement('div');
-        output.className = 'output';
-        output.id = `output-${gen.id}`;
+      "NPC Disposition": () => getWeightedRandomItem([
+        { value: "Friendly", weight: 30 },
+        { value: "Neutral", weight: 40 },
+        { value: "Suspicious", weight: 20 },
+        { value: "Hostile", weight: 10 }
+      ]),
 
-        div.appendChild(button);
-        div.appendChild(output);
-        container.appendChild(div);
-      });
-    }
+      "Weather": () => getWeightedRandomItem([
+        { value: "Clear skies", weight: 50 },
+        { value: "Cloudy", weight: 20 },
+        { value: "Stormy", weight: 15 },
+        { value: "Torrential rain", weight: 10 },
+        { value: "Snowstorm", weight: 5 }
+      ]),
 
-    createGenerators();
-    generateAll();
+      "Wilderness Encounter (Forest)": () => getWeightedRandomItem([
+        { value: "Bandits ambush", weight: 15 },
+        { value: "Peaceful druid circle", weight: 25 },
+        { value: "Giant spider nest", weight: 20 },
+        { value: "Abandoned camp", weight: 30 },
+        { value: "Forest fire", weight: 10 }
+      ]),
+      "Wilderness Encounter (Mountain)": () => getWeightedRandomItem([
+        { value: "Rockslide", weight: 20 },
+        { value: "Wyvern sighting", weight: 10 },
+        { value: "Hermit cave", weight: 25 },
+        { value: "Snowstorm", weight: 30 },
+        { value: "Mine collapse", weight: 15 }
+      ]),
+      "Wilderness Encounter (Plains)": () => getWeightedRandomItem([
+        { value: "Stampede", weight: 15 },
+        { value: "Nomad encampment", weight: 25 },
+        { value: "Fey circle", weight: 20 },
+        { value: "Traveling merchant", weight: 30 },
+        { value: "Lightning strike", weight: 10 }
+      ]),
+      "Wilderness Encounter (Jungle)": () => getWeightedRandomItem([
+        { value: "Disease-carrying insects", weight: 20 },
+        { value: "Lost ruins", weight: 30 },
+        { value: "Tribal warriors", weight: 20 },
+        { value: "Poisonous plants", weight: 15 },
+        { value: "Panther attack", weight: 15 }
+      ]),
+      "Wilderness Encounter (Swamp)": () => getWeightedRandomItem([
+        { value: "Quicksand", weight: 25 },
+        { value: "Will-o'-the-wisp", weight: 20 },
+        { value: "Witch hut", weight: 30 },
+        { value: "Rotting bridge", weight: 15 },
+        { value: "Undead ambush", weight: 10 }
+      ]),
+      "Road Encounter": () => getWeightedRandomItem([
+        { value: "Broken cart", weight: 25 },
+        { value: "Highway robbers", weight: 20 },
+        { value: "Noble caravan", weight: 30 },
+        { value: "Stray animal", weight: 15 },
+        { value: "Bridge toll", weight: 10 }
+      ]),
+      "Urban Encounter": () => getWeightedRandomItem([
+        { value: "Pickpocket attempt", weight: 30 },
+        { value: "Street performer", weight: 25 },
+        { value: "Local riot", weight: 10 },
+        { value: "Guard checkpoint", weight: 20 },
+        { value: "Merchant scam", weight: 15 }
+      ]),
+
+      "NPC Motivation": ["Revenge", "Greed", "Love", "Justice", "Power"],
+      "NPC Description": [
+        "Male, black hair, scarred face",
+        "Female, red hair, missing eye",
+        "Non-binary, silver hair, glowing tattoo",
+        "Male, bald, gold tooth",
+        "Female, braided hair, limping"
+      ],
+
+      "D100 Roll": () => Math.floor(Math.random() * 100) + 1,
+      "D20 Roll": () => Math.floor(Math.random() * 20) + 1,
+
+      "Encounter Difficulty": ["Trivial", "Easy", "Moderate", "Hard", "Deadly"],
+
+      "Wound": ["Bruised rib", "Broken finger", "Dislocated shoulder", "Sprained ankle"],
+      "Major Wound": ["Crushed leg", "Blinded eye", "Severed hand", "Internal bleeding"],
+
+      "Medieval Insult": [
+        "Thou art a boil-brained knave!",
+        "You crusty batch of nature!",
+        "Thou goatish hedge-born scullion!"
+      ],
+      "Medieval Greeting": [
+        "Good morrow, traveler!",
+        "Hail and well met!",
+        "May fortune favor thee!"
+      ]
+    };
+
+    // --- Render Buttons + Results ---
+    const container = document.getElementById("generatorGrid");
+
+    Object.entries(generators).forEach(([label, data]) => {
+      const box = document.createElement("div");
+      box.className = "box";
+
+      const btn = document.createElement("button");
+      btn.textContent = `Generate ${label}`;
+
+      const result = document.createElement("div");
+      result.className = "result";
+
+      const generate = () => {
+        const value = typeof data === "function" ? data() : getRandomItem(data);
+        result.textContent = value;
+      };
+
+      btn.addEventListener("click", generate);
+      box.appendChild(btn);
+      box.appendChild(result);
+      container.appendChild(box);
+
+      // Auto-generate on load
+      generate();
+    });
   </script>
 </body>
 </html>
